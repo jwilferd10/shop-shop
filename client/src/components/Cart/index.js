@@ -1,35 +1,46 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { idbPromise } from "../../utils/helpers"
 import CartItem from "../CartItem";
 import Auth from "../../utils/auth";
 import { useStoreContext } from "../../utils/GlobalState";
-import { TOGGLE_CART } from "../../utils/actions";
+import { TOGGLE_CART, ADD_MULTIPLE_TO_CART } from "../../utils/actions";
 import "./style.css";
 
 const Cart = () => {
-
   const [state, dispatch] = useStoreContext();
 
-    function toggleCart() {
-        dispatch({ type: TOGGLE_CART });
-    }
+  useEffect(() => {
+    async function getCart() {
+      const cart = await idbPromise('cart', 'get');
+      dispatch({ type: ADD_MULTIPLE_TO_CART, products: [...cart] });
+    };
 
-    function calculateTotal() {
-      let sum = 0;
-      state.cart.forEach(item => {
-        sum += item.price * item.purchaseQuantity;
-      });
-      return sum.toFixed(2);
+    if (!state.cart.length) {
+      getCart();
     }
+  }, [state.cart.length, dispatch]);
 
-    if (!state.cartOpen) {
-        return (
-          <div className="cart-closed" onClick={toggleCart}>
-            <span
-              role="img"
-              aria-label="trash">🛒</span>
-          </div>
-        );
-    }
+  function toggleCart() {
+    dispatch({ type: TOGGLE_CART });
+  }
+
+  function calculateTotal() {
+    let sum = 0;
+    state.cart.forEach(item => {
+      sum += item.price * item.purchaseQuantity;
+    });
+    return sum.toFixed(2);
+  }
+
+  if (!state.cartOpen) {
+    return (
+      <div className="cart-closed" onClick={toggleCart}>
+        <span
+          role="img"
+          aria-label="trash">🛒</span>
+      </div>
+    );
+  }
 
     return (
       <div className="cart">
