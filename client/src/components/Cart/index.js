@@ -1,16 +1,13 @@
-import React from 'react';
-import CartItem from '../CartItem';
-import Auth from '../../utils/auth';
-import './style.css';
-
-import { useStoreContext } from '../../utils/GlobalState';
-import { TOGGLE_CART } from '../../utils/actions';
+import React from "react";
+import CartItem from "../CartItem";
+import Auth from "../../utils/auth";
+import { useStoreContext } from "../../utils/GlobalState";
+import { TOGGLE_CART } from "../../utils/actions";
+import "./style.css";
 
 const Cart = () => {
 
-  console.log(state)
-
-    const [state, dispatch] = useStoreContext();
+  const [state, dispatch] = useStoreContext();
 
     function toggleCart() {
         dispatch({ type: TOGGLE_CART });
